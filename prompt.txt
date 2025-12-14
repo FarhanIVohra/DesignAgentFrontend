@@ -1,0 +1,32 @@
+Copilot, now fill the full frontend functionality for DesignAgent using the previously created structure.
+
+Requirements:
+- Upload page → Upload image + enter design brief + Button "Generate Designs"
+  • POST to /generate-initial with FormData { image, concept }
+  • Receive job_id → store in AppContext → navigate to /processing
+
+- Processing page
+  • Poll GET /status/{job_id} every 3 seconds
+  • Show animated spinner + dynamic progress messages
+  • When status == "completed" → navigate to /results
+
+- Results page
+  • GET /results/{job_id}
+  • Display images in grid layout (responsive)
+  • Show label badges under images (e.g., "High contrast")
+  • Button "Compare" → open Compare page with selected images
+
+- Compare page
+  • Show two selected images side-by-side
+  • Buttons: "Back to Results", "Download"
+
+Technical:
+- Use axiosClient.js for API calls
+- Use AppContext.jsx to store job_id + selected images
+- Use TailwindCSS for styling
+- Use LoadingSpinner + ImageCard + ProgressStatus reusable components
+
+Focus on:
+- Clean UI
+- Minimal but modern styling
+- Smooth transitions + hover effects
