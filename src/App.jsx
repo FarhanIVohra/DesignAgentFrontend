@@ -19,7 +19,7 @@ export default function App() {
       <main className="flex-grow container mx-auto px-4 py-6">
         <Routes>
 
-          <Route path="/" element={<Navigate to="/upload" replace />} />
+          <Route path="/" element={<Navigate to="/generate-image" replace />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/processing" element={<Processing />} />
           <Route path="/results" element={<Results />} />
@@ -28,8 +28,10 @@ export default function App() {
 
           {/* ✅ Add this new route */}
           <Route path="/image-generator" element={<ImageGenerator />} />
+          <Route path="/generate" element={<ImageGenerator />} />
+          <Route path="/generate-image" element={<ImageGenerator />} />
 
-          <Route path="*" element={<Navigate to="/image-generator" replace />} />
+          <Route path="*" element={<Navigate to="/generate-image" replace />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/variants" element={<Variants />} />
           <Route path="/edit" element={<EditImage />} />
