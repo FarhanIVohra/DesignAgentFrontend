@@ -1,6 +1,7 @@
+import { BACKEND_URL } from './apiBase'
 export async function refinePrompt(prompt) {
     try {
-        const res = await fetch("http://localhost:8000/refine-prompt", {
+        const res = await fetch(`${BACKEND_URL}/refine-prompt`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ prompt })
