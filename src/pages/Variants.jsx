@@ -12,7 +12,7 @@ export default function Variants() {
 
     const [variants, setVariants] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
     console.log("Variants Page → historyId:", id);
 
     // -----------------------------------------------------
@@ -23,7 +23,7 @@ export default function Variants() {
 
         async function loadOriginal() {
             try {
-                const res = await fetch(`http://localhost:8000/history/${id}`);
+                const res = await fetch(`{BACKEND_URL}/history/${id}`);
 
                 if (!res.ok) {
                     console.error("Unable to load history item:", id);
