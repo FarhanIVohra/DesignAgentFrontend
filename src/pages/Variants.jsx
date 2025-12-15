@@ -13,8 +13,12 @@ export default function Variants() {
 
     const [variants, setVariants] = useState([]);
     const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
 
     const navigate = useNavigate();
+=======
+    const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
+>>>>>>> 038357726490a711ab8992de4989e95740262899
     console.log("Variants Page → historyId:", id);
 
     // -----------------------------------------------------
@@ -25,7 +29,11 @@ export default function Variants() {
 
         async function loadOriginal() {
             try {
+<<<<<<< HEAD
                 const res = await fetch(`${BACKEND_URL}/history/${id}`);
+=======
+                const res = await fetch(`{BACKEND_URL}/history/${id}`);
+>>>>>>> 038357726490a711ab8992de4989e95740262899
 
                 if (!res.ok) {
                     console.error("Unable to load history item:", id);
