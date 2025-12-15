@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getHistory } from "../api/historyApi";
-import { BASE_URL } from "../api/apiBase";
+import { BACKEND_URL } from "../api/apiBase";
 import { useNavigate } from "react-router-dom";
 
 export default function History() {
@@ -20,7 +20,7 @@ export default function History() {
       setActionLoadingId(id);
       setActionType("delete");
 
-      const res = await fetch(`${BASE_URL}/history/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/history/${id}`, {
         method: "DELETE",
       });
 
@@ -86,21 +86,47 @@ export default function History() {
                 className="w-full h-48 object-cover bg-gray-50"
               />
 
-              {/* Download overlay: appears on hover or focus */}
-              <a
-                href={item.image_url || "#"}
-                download
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Download image"
-                className={`absolute top-2 right-2 flex items-center justify-center p-2 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition`}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 10l5 5 5-5" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15V3" />
-                </svg>
-              </a>
+              {/* Hover overlay with actions: Edit, Variants, Download */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center pointer-events-none">
+                <div className="opacity-0 group-hover:opacity-100 transition pointer-events-auto flex gap-3">
+                  {/* Edit */}
+                  <button
+                    onClick={() => {
+                      setActionLoadingId(item.id);
+                      setActionType('edit');
+                      navigate(`/edit?id=${item.id}`);
+                    }}
+                    className="bg-white/90 hover:bg-white px-3 py-2 rounded-md flex items-center gap-2 text-sm"
+                    aria-label={`Edit ${item.id}`}
+                  >
+                    <span className="text-slate-700">✏️</span>
+                    <span className="text-slate-800">Edit</span>
+                  </button>
+
+                  {/* Variants */}
+                  <button
+                    onClick={() => openVariants(item.id)}
+                    className="bg-white/90 hover:bg-white px-3 py-2 rounded-md flex items-center gap-2 text-sm"
+                    aria-label={`Variants ${item.id}`}
+                  >
+                    <span className="text-slate-700">🧬</span>
+                    <span className="text-slate-800">Variants</span>
+                  </button>
+
+                  {/* Download */}
+                  <a
+                    href={item.image_url || '#'}
+                    download
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-white/90 hover:bg-white px-3 py-2 rounded-md flex items-center gap-2 text-sm"
+                    aria-label={`Download ${item.id}`}
+                  >
+                    <span className="text-slate-700">⬇️</span>
+                    <span className="text-slate-800">Download</span>
+                  </a>
+                </div>
+              </div>
             </div>
 
             <p className="text-sm text-gray-700">

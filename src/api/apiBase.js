@@ -1,19 +1,22 @@
-// Centralized API base URL for frontend
-// Reads from Vite env var: VITE_API_BASE_URL
+// Centralized BACKEND URL for frontend
+// Primary env var: VITE_BACKEND_URL
+// Backward-compatible fallbacks: VITE_API_BASE_URL, VITE_API_BASE
 
-const raw = import.meta.env.VITE_API_BASE_URL;
+const envBackend = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE;
 
-if (!raw) {
-  // Clear and actionable message for developers when env is missing
-  // We still set a safe fallback so the app can run during local dev
-  // but it's important to configure VITE_API_BASE_URL in .env or on the host.
+if (!envBackend) {
+  // Helpful developer message when no env is configured. We still fall back to localhost
+  // so the app can run during local dev, but set VITE_BACKEND_URL in Vercel or .env for production.
   // eslint-disable-next-line no-console
   console.error(
-    '[DesignAgent] VITE_API_BASE_URL is not set. Falling back to http://localhost:8000.\n' +
-      'Set VITE_API_BASE_URL in your frontend .env file or in your deployment environment variables.'
+    '[DesignAgent] VITE_BACKEND_URL (or VITE_API_BASE_URL/VITE_API_BASE) is not set. Falling back to http://localhost:8000.\n' +
+      'Set VITE_BACKEND_URL in your frontend .env or in your Vercel environment variables for production.'
   );
 }
 
-export const BASE_URL = raw || 'http://localhost:8000';
+export const BACKEND_URL = envBackend || 'http://localhost:8000';
 
-export default BASE_URL;
+// Keep BASE_URL for backwards compatibility
+export const BASE_URL = BACKEND_URL;
+
+export default BACKEND_URL;

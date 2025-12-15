@@ -1,7 +1,9 @@
+import { BACKEND_URL } from './apiBase'
+
 export async function generateImage(prompt) {
     if (!prompt || !prompt.trim()) throw new Error('Prompt is empty')
 
-    const response = await fetch('http://localhost:8000/generate-image', {
+    const response = await fetch(`${BACKEND_URL}/generate-image`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: prompt.trim() })

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-
+import { BACKEND_URL } from "../api/apiBase";
 export default function EditImage() {
     const [params] = useSearchParams();
     const id = params.get("id");
@@ -21,7 +21,7 @@ export default function EditImage() {
         if (!id) return;
 
         async function load() {
-            const res = await fetch(`${BASE_URL}/history/${id}`);
+            const res = await fetch(`${BACKEND_URL}/history/${id}`);
             const data = await res.json();
             setItem(data);
         }
@@ -94,7 +94,7 @@ export default function EditImage() {
         console.log("➡️ Mask length:", maskBase64.length);
 
         try {
-            const res = await fetch(`${BASE_URL}/edit-image`, {
+            const res = await fetch(`${BACKEND_URL}/edit-image`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

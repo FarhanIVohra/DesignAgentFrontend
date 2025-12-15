@@ -4,7 +4,6 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Upload from './pages/Upload'
 import Processing from './pages/Processing'
-import Results from './pages/Results'
 import Compare from './pages/Compare'
 import ImageGenerator from './components/ImageGenerator.jsx';
 import History from './pages/History'
@@ -22,8 +21,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/generate-image" replace />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/processing" element={<Processing />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/compare" element={<Compare />} />
+          {/* <Route path="/compare" element={<Compare />} /> */}
           <Route path="/history" element={<History />} />
 
           {/* ✅ Add this new route */}

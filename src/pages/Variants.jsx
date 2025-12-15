@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { generateVariants } from "../api/generateVariants";
+import { BACKEND_URL } from "../api/apiBase";
 
 export default function Variants() {
     const [params] = useSearchParams();
@@ -13,6 +14,7 @@ export default function Variants() {
     const [variants, setVariants] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const navigate = useNavigate();
     console.log("Variants Page → historyId:", id);
 
     // -----------------------------------------------------
@@ -23,7 +25,7 @@ export default function Variants() {
 
         async function loadOriginal() {
             try {
-                const res = await fetch(`http://localhost:8000/history/${id}`);
+                const res = await fetch(`${BACKEND_URL}/history/${id}`);
 
                 if (!res.ok) {
                     console.error("Unable to load history item:", id);
@@ -52,7 +54,7 @@ export default function Variants() {
         try {
             setLoading(true);
 
-            const response = await generateVariants(prompt, seed, 4);
+            const response = await generateVariants(prompt, 4);
 
             console.log("Variants API result:", response);
 
@@ -87,11 +89,40 @@ export default function Variants() {
             {/* Original Image */}
             {item?.image_url && (
                 <div className="mb-4">
-                    <img
-                        src={item.image_url}
-                        alt="Original"
-                        className="w-64 rounded shadow mb-3"
-                    />
+                    <div className="relative inline-block group">
+                        <img
+                            src={item.image_url}
+                            alt="Original"
+                            className="w-64 rounded shadow mb-3"
+                        />
+
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
+                            <div className="opacity-0 group-hover:opacity-100 transition flex gap-2">
+                                <button
+                                    onClick={() => navigate(`/edit?id=${id}`)}
+                                    className="bg-white/90 px-3 py-2 rounded-md text-sm"
+                                >
+                                    ✏️ Edit
+                                </button>
+                                <button
+                                    onClick={() => navigate(`/variants?id=${id}`)}
+                                    className="bg-white/90 px-3 py-2 rounded-md text-sm"
+                                >
+                                    🧬 Variants
+                                </button>
+                                <a
+                                    href={item.image_url}
+                                    download
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="bg-white/90 px-3 py-2 rounded-md text-sm"
+                                >
+                                    ⬇️ Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <p className="text-gray-600 text-sm">
                         <strong>Seed:</strong> {item.seed}
                     </p>
@@ -118,7 +149,17 @@ export default function Variants() {
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {variants.map((url, idx) => (
                     <div key={idx} className="p-2 bg-white rounded shadow">
-                        <img src={url} alt={`variant-${idx}`} className="rounded" />
+                        <div className="relative group">
+                            <img src={url} alt={`variant-${idx}`} className="rounded w-full h-40 object-cover" />
+
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center">
+                                <div className="opacity-0 group-hover:opacity-100 transition flex gap-2">
+                                    <a href={url} download target="_blank" rel="noreferrer" className="bg-white/90 px-2 py-1 rounded text-sm">⬇️</a>
+                                    <button onClick={() => navigate(`/edit?id=${id}`)} className="bg-white/90 px-2 py-1 rounded text-sm">✏️</button>
+                                    <button onClick={() => navigate(`/variants?id=${id}`)} className="bg-white/90 px-2 py-1 rounded text-sm">🧬</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>

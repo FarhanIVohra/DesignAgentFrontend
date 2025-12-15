@@ -1,8 +1,9 @@
 // src/api/getHistory.js
+import { BACKEND_URL } from './apiBase'
 
 export async function getHistory() {
     try {
-        const response = await fetch("http://localhost:8000/history/history", {
+        const response = await fetch(`${BACKEND_URL}/history/`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"

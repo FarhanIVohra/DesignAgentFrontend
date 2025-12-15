@@ -1,8 +1,8 @@
-import { BASE_URL } from "./apiBase";
+import { BACKEND_URL } from "./apiBase";
 
 export async function getHistory() {
     try {
-        const res = await fetch(`${BASE_URL}/history/`);
+        const res = await fetch(`${BACKEND_URL}/history/`);
         if (!res.ok) throw new Error(await res.text());
         return await res.json();
     } catch (err) {
@@ -13,7 +13,7 @@ export async function getHistory() {
 
 export async function getHistoryItem(id) {
     try {
-        const res = await fetch(`${BASE_URL}/history/${id}`);
+        const res = await fetch(`${BACKEND_URL}/history/${id}`);
         if (!res.ok) throw new Error(await res.text());
         return await res.json();
     } catch (err) {
