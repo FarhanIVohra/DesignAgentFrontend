@@ -5,7 +5,8 @@ import { BACKEND_URL } from "../api/apiBase";
 
 export default function Variants() {
     const [params] = useSearchParams();
-    const id = params.get("id");
+    const id = params.get("id"); // MUST match History.jsx
+    const navigate = useNavigate();
 
     const [item, setItem] = useState(null);
     const [prompt, setPrompt] = useState("");
@@ -13,117 +14,98 @@ export default function Variants() {
 
     const [variants, setVariants] = useState([]);
     const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
 
-    const navigate = useNavigate();
-=======
-    const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
->>>>>>> 038357726490a711ab8992de4989e95740262899
-    console.log("Variants Page → historyId:", id);
+    console.log("Variants → history id:", id);
 
-    // -----------------------------------------------------
-    //  LOAD ORIGINAL IMAGE + PROMPT
-    // -----------------------------------------------------
+    // --------------------------------------------------
+    // Load original image + prompt
+    // --------------------------------------------------
     useEffect(() => {
         if (!id) return;
 
         async function loadOriginal() {
             try {
-<<<<<<< HEAD
                 const res = await fetch(`${BACKEND_URL}/history/${id}`);
-=======
-                const res = await fetch(`{BACKEND_URL}/history/${id}`);
->>>>>>> 038357726490a711ab8992de4989e95740262899
 
                 if (!res.ok) {
-                    console.error("Unable to load history item:", id);
+                    console.error("Failed to load history item:", id);
                     return;
                 }
 
                 const data = await res.json();
-                console.log("Loaded original image data:", data);
+                console.log("Loaded history item:", data);
 
                 setItem(data);
                 setPrompt(data.prompt || "");
                 setSeed(data.seed || null);
 
             } catch (err) {
-                console.error("History load failed:", err);
+                console.error("History fetch error:", err);
             }
         }
 
         loadOriginal();
     }, [id]);
 
-    // -----------------------------------------------------
-    //  GENERATE VARIANTS
-    // -----------------------------------------------------
+    // --------------------------------------------------
+    // Generate variants
+    // --------------------------------------------------
     const handleGenerate = async () => {
         try {
             setLoading(true);
 
             const response = await generateVariants(prompt, 4);
+            console.log("Variants response:", response);
 
-            console.log("Variants API result:", response);
-
-            if (!response.success) {
-                console.error("Variant generation failed:", response);
+            if (!response?.success || !Array.isArray(response.items)) {
+                console.error("Invalid variants response");
                 setVariants([]);
                 return;
             }
 
-            // Backend format: { success: true, items: [ { image_url, seed }, ... ] }
-            const urls = response.items?.map(v => v.image_url) || [];
-
-            console.log("Extracted variant URLs:", urls);
-
-            setVariants(urls);
+            setVariants(response.items);
 
         } catch (err) {
-            console.error("Error generating variants:", err);
+            console.error("Variant generation failed:", err);
             setVariants([]);
         } finally {
             setLoading(false);
         }
     };
 
-    // -----------------------------------------------------
-    //  UI RENDER
-    // -----------------------------------------------------
+    // --------------------------------------------------
+    // UI
+    // --------------------------------------------------
     return (
         <div className="p-6">
             <h2 className="text-xl font-bold mb-4">Generate Variants</h2>
 
-            {/* Original Image */}
+            {/* ORIGINAL IMAGE */}
             {item?.image_url && (
-                <div className="mb-4">
+                <div className="mb-6">
                     <div className="relative inline-block group">
                         <img
                             src={item.image_url}
                             alt="Original"
-                            className="w-64 rounded shadow mb-3"
+                            className="w-72 rounded shadow"
                         />
 
+                        {/* Hover actions */}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
                             <div className="opacity-0 group-hover:opacity-100 transition flex gap-2">
                                 <button
                                     onClick={() => navigate(`/edit?id=${id}`)}
-                                    className="bg-white/90 px-3 py-2 rounded-md text-sm"
+                                    className="bg-white px-3 py-2 rounded text-sm"
                                 >
                                     ✏️ Edit
                                 </button>
-                                <button
-                                    onClick={() => navigate(`/variants?id=${id}`)}
-                                    className="bg-white/90 px-3 py-2 rounded-md text-sm"
-                                >
-                                    🧬 Variants
-                                </button>
+
                                 <a
                                     href={item.image_url}
                                     download
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="bg-white/90 px-3 py-2 rounded-md text-sm"
+                                    className="bg-white px-3 py-2 rounded text-sm"
                                 >
                                     ⬇️ Download
                                 </a>
@@ -131,13 +113,13 @@ export default function Variants() {
                         </div>
                     </div>
 
-                    <p className="text-gray-600 text-sm">
-                        <strong>Seed:</strong> {item.seed}
+                    <p className="text-sm text-gray-600 mt-2">
+                        <strong>Seed:</strong> {seed}
                     </p>
                 </div>
             )}
 
-            {/* Prompt Editing */}
+            {/* PROMPT */}
             <textarea
                 className="w-full p-2 border rounded mb-3"
                 value={prompt}
@@ -153,21 +135,42 @@ export default function Variants() {
                 {loading ? "Generating…" : "Generate Variants"}
             </button>
 
-            {/* Variants Grid */}
+            {/* VARIANTS GRID */}
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {variants.map((url, idx) => (
-                    <div key={idx} className="p-2 bg-white rounded shadow">
+                {variants.map((v, idx) => (
+                    <div key={idx} className="bg-white rounded shadow p-2">
                         <div className="relative group">
-                            <img src={url} alt={`variant-${idx}`} className="rounded w-full h-40 object-cover" />
+                            <img
+                                src={v.image_url}
+                                alt={`variant-${idx}`}
+                                className="w-full h-40 object-cover rounded"
+                            />
 
+                            {/* Hover actions */}
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center">
                                 <div className="opacity-0 group-hover:opacity-100 transition flex gap-2">
-                                    <a href={url} download target="_blank" rel="noreferrer" className="bg-white/90 px-2 py-1 rounded text-sm">⬇️</a>
-                                    <button onClick={() => navigate(`/edit?id=${id}`)} className="bg-white/90 px-2 py-1 rounded text-sm">✏️</button>
-                                    <button onClick={() => navigate(`/variants?id=${id}`)} className="bg-white/90 px-2 py-1 rounded text-sm">🧬</button>
+                                    <a
+                                        href={v.image_url}
+                                        download
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="bg-white px-2 py-1 rounded text-sm"
+                                    >
+                                        ⬇️
+                                    </a>
+                                    <button
+                                        onClick={() => navigate(`/edit?id=${id}`)}
+                                        className="bg-white px-2 py-1 rounded text-sm"
+                                    >
+                                        ✏️
+                                    </button>
                                 </div>
                             </div>
                         </div>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                            Seed: {v.seed}
+                        </p>
                     </div>
                 ))}
             </div>
